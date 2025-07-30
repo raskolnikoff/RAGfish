@@ -1,0 +1,35 @@
+@startuml
+!theme amiga
+actor User
+
+User -> Settings : load()
+alt Embedded resources available
+    Settings --> DocumentManager : provide embedded LLMRagFile, LLMModel
+else Embedded resources NOT available
+    User -> DocumentManager : selectImportFromDrive()
+
+    alt LLMRag file available
+        DocumentManager -> GoogleDriveService : download("file.llmrag")
+        GoogleDriveService --> DocumentManager : .llmrag file
+        DocumentManager -> LLMRagFile : parse(file)
+        DocumentManager --> User : importComplete()
+    else LLMRag file NOT found
+        DocumentManager --> User : error("llmrag file not found")
+        note right: Fallback to embedded resources if available; otherwise, user must import manually
+    end
+end
+
+User -> UserQuery : ask(question)
+UserQuery -> Settings : getDefaultModel()
+note right: Get the default model name from Settings
+UserQuery -> LLMModel : embed(question)
+LLMModel --> UserQuery : queryEmbedding
+
+UserQuery -> VectorStore : findRelevant(queryEmbedding)
+VectorStore --> UserQuery : relevantChunks
+
+UserQuery -> AnswerGenerator : generate(relevantChunks, question)
+AnswerGenerator --> UserQuery : answer
+
+UserQuery --> User : displayAnswer(answer)
+@enduml

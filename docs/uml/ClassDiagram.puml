@@ -1,0 +1,137 @@
+@startuml
+!theme amiga
+left to right direction
+
+'=== iOS App Layer ===
+class RAGApp {
+    +DocumentManager documentManager
+    +ModelManager modelManager
+    +Settings settings
+    +UserQuery ask(query): Answer
+}
+
+class DocumentManager {
+    +importDocument(file)
+    +loadFromGoogleDrive(file)
+    +importModelResource(file)
+    +llmragFiles: LLMRagFile[*]
+}
+
+class LLMRagFile {
+    +filename: String
+    +metadata: Map
+    +chunks: Chunk[*]
+    +isEmbedded: Bool
+}
+
+class Chunk {
+    +content: String
+    +embedding: float[]
+}
+
+class VectorStore {
+    +chunks: Chunk[*]
+    +findRelevant(queryEmbedding): Chunk[*]
+}
+
+class UserQuery {
+    +question: String
+    +runQuery(): Answer
+}
+
+class AnswerGenerator {
+    +generate(chunks: Chunk[*], query: String): Answer
+}
+
+class ModelManager {
+    +currentEmbeddingModel: EmbeddingModel
+    +currentLLMModel: LLMModel
+    +switchEmbeddingModel(name)
+    +switchLLMModel(name)
+}
+
+'=== Settings manages only the essential configuration for the app. ===
+class Settings {
+    +selectedEmbeddingModelName: String
+    +selectedLLMModelName: String
+    +llmragFilePath: String
+    +modelResourcePath: String
+    +theme: String
+    +language: String
+    +load()
+    +save()
+    +isUsingEmbeddedModel: Bool
+    +isUsingEmbeddedLLMRagFile: Bool
+    +useEmbeddedResources()
+}
+note right of Settings
+App includes embedded default resources (LLMModel, LLMRagFile) for out-of-the-box usage.
+Users may optionally import custom resources if needed.
+end note
+
+'=== Model Pipeline Layer ===
+class Preprocessor {
+    +preprocess(document): Chunk[*]
+}
+
+class EmbeddingModel {
+    +name: String
+    +embed(text: String): float[]
+}
+
+class LLMModel {
+    +name: String
+    +modelFile: String
+    +version: String
+    +generate(prompt: String): String
+    +loadModel(file)
+}
+
+class ChunkExporter {
+    +export(chunks: Chunk[*]): LLMRagFile
+}
+
+'=== Storage / External Services ===
+class GoogleDriveService {
+    +upload(file)
+    +download(filename)
+    +listFiles()
+}
+
+class FileResource {
+    +filename: String
+    +data: Binary
+}
+
+'=== Admin ===
+class SystemLog {
+    +logEvent(event: String)
+}
+
+'=== Relations with multiplicity ===
+DocumentManager "1" -- "0..*" LLMRagFile
+LLMRagFile "1" -- "0..*" Chunk
+
+'=== Relations ===
+RAGApp --> DocumentManager
+RAGApp --> ModelManager
+RAGApp --> Settings
+RAGApp --> UserQuery
+DocumentManager --> LLMRagFile
+LLMRagFile --> Chunk
+DocumentManager --> GoogleDriveService
+'Import/download only; export/upload not included unless extended later
+DocumentManager --> FileResource
+DocumentManager --> LLMModel
+UserQuery --> VectorStore
+VectorStore --> Chunk
+UserQuery --> AnswerGenerator
+AnswerGenerator --> Chunk
+ModelManager --> EmbeddingModel
+ModelManager --> LLMModel
+Preprocessor --> EmbeddingModel
+Preprocessor --> Chunk
+ChunkExporter --> LLMRagFile
+GoogleDriveService --> FileResource
+
+@enduml

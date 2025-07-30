@@ -1,0 +1,162 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+'!theme bluegray
+'skinparam defaultFontName "Arial"
+'skinparam defaultFontSize 13
+'skinparam usecase {
+''  BackgroundColor #FFFAFA
+'  BorderColor #198754
+'  BorderThickness 2
+'  RoundCorner 15
+'}
+
+!theme amiga
+
+'actor actor
+'actor/ "actor/"
+'agent agent
+'artifact artifact
+'boundary boundary
+'card card
+'circle circle
+'cloud cloud
+'collections collections
+'component component
+'control control
+'database database
+'entity entity
+'file file
+'folder folder
+'frame frame
+'hexagon hexagon
+'interface interface
+'label label
+'node node
+'package package
+'person person
+'queue queue
+'rectangle rectangle
+'stack stack
+'storage storage
+'usecase usecase
+'usecase/ "usecase/"
+
+left to right direction
+'top to bottom direction
+skinparam svgLinkTarget _blank
+scale 1
+
+
+rectangle "iOS App" {
+  actor User
+  usecase "Upload Documents / \nImport and Save to Google Drive" as UC1
+  usecase "Ask Question"
+  usecase "Model Switch"
+  usecase "Settings"
+  usecase "Retrieve Chunks"
+  usecase "Import Model Resource"
+
+  note top of (Settings)
+    The app includes embedded default
+    resources (LLMModel,
+    LLMRagFile) based on Llama3 for
+    out-of-the-box usage. Users may
+    optionally import custom resources
+    if needed.
+  end note
+
+  note right of UC1
+    Users upload documents directly,
+    import from Google Drive, or save
+    processed data to Google Drive.
+  end note
+
+  note right of (Ask Question)
+    Users submit queries to search
+    the document
+    knowledge base.
+  end note
+
+  note right of (Model Switch)
+    Users select among available LLM models.
+  end note
+
+  note right of (Settings)
+    Users manage system configuration
+    and preferences. On first launch,
+    the app uses embedded default model
+    and default RAG
+    chunks & embeddings. Includes
+    selection of current model
+    and management of paths
+     to imported resources.
+  end note
+
+  note right of (Retrieve Chunks)
+    Relevant document chunks are fetched
+    from the vector store.
+  end note
+
+  note right of (Import Model Resource)
+    Users may optionally import external
+     model resources (weights, configs,
+     etc.) packaged for use by the app.
+     This allows local inference or
+     embedding generation with custom models.
+  end note
+}
+
+rectangle "Model Pipeline" {
+  usecase "Preprocess:\n Embedding Generation\n & \nDocument Splitting" as UC2
+  usecase "Export .llmrag File" as UC3
+  usecase "LLM Answer"
+  usecase "RAG Answer"
+
+  note right of UC2
+    Preprocessing creates embeddings and
+    splits documents into chunks.
+  end note
+
+  note right of UC3
+    All chunk, embedding, and metadata files
+    are bundled as a single .llmrag package
+    for app import.
+    (.llmrag is generated in Colab or similar
+    tools and imported to iOS for local RAG.)
+  end note
+
+  note right of (LLM Answer)
+    LLM generates answers based
+    on retrieved chunks.
+  end note
+
+  note right of (RAG Answer)
+    Retrieval Augmented Generation combines
+    retrieval with LLM for better responses.
+  end note
+}
+
+rectangle "System (Admin)" {
+  actor Admin
+  usecase "System Log / Audit"
+
+  note right of (System Log / Audit)
+    Admins review logs and audit trails
+    for security and monitoring.
+  end note
+}
+
+User --> UC1
+User --> UC2
+UC2 --> UC3
+User --> (Ask Question)
+(Ask Question) --> (Retrieve Chunks)
+(Retrieve Chunks) --> (LLM Answer)
+(Retrieve Chunks) --> (RAG Answer)
+User --> (Model Switch)
+User --> (Settings)
+User --> (Import Model Resource)
+
+Admin --> (System Log / Audit)
+
+@enduml
