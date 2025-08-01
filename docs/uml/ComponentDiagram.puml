@@ -1,0 +1,19 @@
+@startuml
+!theme plain
+!theme amiga
+
+[User] --> [UI (Noesis)]
+[UI (Noesis)] --> [Core Engine]
+[UI (Noesis)] --> [Document/Embedding Manager]
+[UI (Noesis)] --> [File Import/Export]
+
+[Core Engine] --> [Vector Store]
+[Core Engine] --> [Document/Embedding Manager]
+
+[Document/Embedding Manager] --> [File Import/Export]
+[File Import/Export] ..> [Google Drive] : sync/import
+[File Import/Export] ..> [Local File System]
+
+[Google Colab Preprocessor] ..> [Document/Embedding Manager] : RAGpack ZIP
+
+@enduml
