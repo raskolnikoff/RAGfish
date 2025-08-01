@@ -4,9 +4,9 @@
 RAGfish is a privacy-first, on-device Retrieval-Augmented Generation (RAG) engine for Apple platforms. The core system is designed to run fully locally, without cloud dependencies, and can be extended for both macOS and iOS.  
 Visual architecture diagrams are available below and in `assets/`.
 
-- ![Class Diagram](assets/ClassDiagram.png)
-- ![Sequence Diagram](assets/SequenceDiagram.png)
-- ![Use Case Diagram](assets/UseCaseDiagram.png)
+- ![Class Diagram](../assets/ClassDiagram.png)
+- ![Sequence Diagram](../assets/SequenceDiagram.png)
+- ![Use Case Diagram](../assets/UseCaseDiagram.png)
 
 ## Components
 

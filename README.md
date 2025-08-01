@@ -23,13 +23,13 @@ RAGfish is built on the principle that knowledge work should remain private, pow
 ## Diagrams
 
 ### Class Diagram
-![Class Diagram](assets/ClassDiagram.png)
+![Class Diagram](docs/assets/ClassDiagram.png)
 
 ### Sequence Diagram
-![Sequence Diagram](assets/SequenceDiagram.png)
+![Sequence Diagram](docs/assets/SequenceDiagram.png)
 
 ### Use Case Diagram
-![Use Case Diagram](assets/UseCaseDiagram.png)
+![Use Case Diagram](docs/assets/UseCaseDiagram.png)
 
 ## Documentation
 - [Architecture](./ARCHITECTURE.md)
