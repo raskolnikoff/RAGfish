@@ -4,16 +4,26 @@
 
 [User] --> [UI (Noesis)]
 [UI (Noesis)] --> [Core Engine]
-[UI (Noesis)] --> [Document/Embedding Manager]
+[UI (Noesis)] --> [DocumentManager]
 [UI (Noesis)] --> [File Import/Export]
 
+note right of [UI (Noesis)]
+  QA thread/history managed in-app
+  (see NoesisNoema)
+end note
+
+note right of [DocumentManager]
+  QA thread/history managed in-app
+  (see NoesisNoema)
+end note
+
 [Core Engine] --> [Vector Store]
-[Core Engine] --> [Document/Embedding Manager]
+[Core Engine] --> [DocumentManager]
 
-[Document/Embedding Manager] --> [File Import/Export]
-[File Import/Export] ..> [Google Drive] : sync/import
-[File Import/Export] ..> [Local File System]
+[DocumentManager] --> [File Import/Export]
+[File Import/Export] ..> [Google Drive] : sync/import RAGpack (.zip)
+[File Import/Export] ..> [Local File System] : handles RAGpack (.zip)
 
-[Google Colab Preprocessor] ..> [Document/Embedding Manager] : RAGpack ZIP
+[Google Colab Preprocessor] ..> [DocumentManager] : outputs RAGpack ZIP
 
 @enduml

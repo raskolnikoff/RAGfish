@@ -4,17 +4,17 @@ actor User
 
 User -> Settings : load()
 alt Embedded resources available
-    Settings --> DocumentManager : provide embedded LLMRagFile, LLMModel
+    Settings --> DocumentManager : provide embedded RAGpack (.zip), LLMModel
 else Embedded resources NOT available
     User -> DocumentManager : selectImportFromDrive()
 
-    alt LLMRag file available
-        DocumentManager -> GoogleDriveService : download("file.llmrag")
-        GoogleDriveService --> DocumentManager : .llmrag file
-        DocumentManager -> LLMRagFile : parse(file)
+    alt RAGpack (.zip) available
+        DocumentManager -> GoogleDriveService : download("file.zip")
+        GoogleDriveService --> DocumentManager : RAGpack (.zip)
+        DocumentManager -> RAGpack : extractAndParse(RAGpack.zip)
         DocumentManager --> User : importComplete()
-    else LLMRag file NOT found
-        DocumentManager --> User : error("llmrag file not found")
+    else RAGpack (.zip) NOT found
+        DocumentManager --> User : error("RAGpack (.zip) not found")
         note right: Fallback to embedded resources if available; otherwise, user must import manually
     end
 end
@@ -32,4 +32,5 @@ UserQuery -> AnswerGenerator : generate(relevantChunks, question)
 AnswerGenerator --> UserQuery : answer
 
 UserQuery --> User : displayAnswer(answer)
+note right: QA thread/history management (multiple question-answer pairs) is implemented in NoesisNoema app. See app source for details.
 @enduml

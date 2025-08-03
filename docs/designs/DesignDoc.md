@@ -1,41 +1,44 @@
-# Design Doc: [Feature or Component Name]
+# Design Doc: RAGfish Unified RAGpack Architecture & Private QA History
 
 ## Author
-- [Your Name]
+- Taka & Max (ChatGPT)
 
 ## Status
-- Proposed / Approved / Implemented / Deprecated
+- Implemented
 
 ## Background / Motivation
-Describe why this feature or change is needed. What is the current pain point or problem?  
-What context (business, user, technical) does this address?  
-Include links to related discussions, issues, or requirements if relevant.
+To build a truly private, user-owned LLM RAG ecosystem enabling seamless knowledge import, retrieval, and QA thread management, with no reliance on cloud providers. Current RAG tools were fragmented and lacked a standard, portable pack format and local history. We wanted RAG that feels like "your own AGI lab", not SaaS. (See GitHub discussions and ADR #0001.)
 
 ## Goals & Non-Goals
 ### Goals
-- Clearly list what this design aims to achieve (functional, UX, performance, etc.)
+- Unified RAGpack ZIP format for all knowledge artifacts
+- Full offline/Apple Silicon RAG
+- Threaded QA history and multi-pack support
+- OSS-first, developer-friendly
+- Extensible for future right-pane, p2p, mobile
 
 ### Non-Goals
-- Explicitly call out what is not in scope for this proposal (if anything).
+- Not building cloud/SaaS solution
+- Not supporting legacy per-file chunks/embeddings/tokenizer workflows
 
 ## Proposal / Solution Overview
-Explain the high-level solution or approach.  
-- Describe the user experience, technical strategy, and architectural impact.
-- Add diagrams or sequence flows if helpful (can reference assets/*).
+The new architecture centers on the RAGpack (.zip) as single source of truth, integrating all embeddings, chunks, and metadata. Preprocessing is handled by noesisnoema-pipeline, consumption by NoesisNoema (macOS/iOS) app. All QA history/thread logic is managed client-side. UI is modern, 2-pane, extensible.  
+Refer to assets/* for updated diagrams.
 
 ## Alternatives Considered
-Summarize any other options or designs that were considered and why they were not chosen.
+- Per-file artifact management (not portable/complex UX)  
+- Cloud RAG/SaaS, but violates privacy/local-first philosophy
 
 ## Impact / Risk
-- Discuss expected impacts on compatibility, security, UX, and maintainability.
-- List any known risks, mitigations, or rollout strategies.
+- Much simpler onboarding, lower friction for new users  
+- Improved privacy/security: nothing leaves device by default  
+- Risk: some "power users" lose ultra-granular control (tradeoff for UX/maintainability)
 
 ## Implementation Plan
-Break down the steps needed to deliver this feature/change, including:
-- Milestones
-- Required tasks
-- Who owns each part (if applicable)
-- Estimated timelines (if available)
+- Completed: UML/design/README/ARCHITECTURE/ADR sync, pipeline and app refactor, world-class UX, public repo launch  
+- Next: iOS app, right-pane upgrades, plugin API, multi-RAGpack analytics, more
 
 ## Open Questions
-- List unresolved issues or points that need further discussion or investigation.
+- What new uses or communities might emerge from open RAGpack standards?  
+- How will decentralized RAG evolve with better local LLMs and device sync?  
+- Any friction points for non-technical users?

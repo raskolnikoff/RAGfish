@@ -14,14 +14,15 @@ class DocumentManager {
     +importDocument(file)
     +loadFromGoogleDrive(file)
     +importModelResource(file)
-    +llmragFiles: LLMRagFile[*]
+    +ragpacks: RAGpack[*]
 }
 
-class LLMRagFile {
+class RAGpack {
     +filename: String
     +metadata: Map
     +chunks: Chunk[*]
     +isEmbedded: Bool
+    +Note: Always imported/exported as .zip archive, not individual files
 }
 
 class Chunk {
@@ -50,23 +51,33 @@ class ModelManager {
     +switchLLMModel(name)
 }
 
+class QAPair {
+    +question: String
+    +answer: String
+    +timestamp: DateTime
+}
+
 '=== Settings manages only the essential configuration for the app. ===
 class Settings {
     +selectedEmbeddingModelName: String
     +selectedLLMModelName: String
-    +llmragFilePath: String
+    +ragpackPath: String
     +modelResourcePath: String
     +theme: String
     +language: String
     +load()
     +save()
     +isUsingEmbeddedModel: Bool
-    +isUsingEmbeddedLLMRagFile: Bool
+    +isUsingEmbeddedRAGpack: Bool
     +useEmbeddedResources()
 }
 note right of Settings
-App includes embedded default resources (LLMModel, LLMRagFile) for out-of-the-box usage.
+App includes embedded default resources (LLMModel, RAGpack) for out-of-the-box usage.
 Users may optionally import custom resources if needed.
+end note
+
+note right of QAPair
+UI-level thread, history, and QA management is detailed in NoesisNoema implementation.
 end note
 
 '=== Model Pipeline Layer ===
@@ -88,7 +99,7 @@ class LLMModel {
 }
 
 class ChunkExporter {
-    +export(chunks: Chunk[*]): LLMRagFile
+    +export(chunks: Chunk[*]): RAGpack
 }
 
 '=== Storage / External Services ===
@@ -109,16 +120,17 @@ class SystemLog {
 }
 
 '=== Relations with multiplicity ===
-DocumentManager "1" -- "0..*" LLMRagFile
-LLMRagFile "1" -- "0..*" Chunk
+DocumentManager "1" -- "0..*" RAGpack
+RAGpack "1" -- "0..*" Chunk
+RAGApp "1" -- "0..*" QAPair
 
 '=== Relations ===
 RAGApp --> DocumentManager
 RAGApp --> ModelManager
 RAGApp --> Settings
 RAGApp --> UserQuery
-DocumentManager --> LLMRagFile
-LLMRagFile --> Chunk
+DocumentManager --> RAGpack
+RAGpack --> Chunk
 DocumentManager --> GoogleDriveService
 'Import/download only; export/upload not included unless extended later
 DocumentManager --> FileResource
@@ -131,7 +143,7 @@ ModelManager --> EmbeddingModel
 ModelManager --> LLMModel
 Preprocessor --> EmbeddingModel
 Preprocessor --> Chunk
-ChunkExporter --> LLMRagFile
+ChunkExporter --> RAGpack
 GoogleDriveService --> FileResource
 
 @enduml

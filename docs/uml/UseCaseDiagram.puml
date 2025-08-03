@@ -55,6 +55,7 @@ rectangle "iOS App" {
   usecase "Settings"
   usecase "Retrieve Chunks"
   usecase "Import Model Resource"
+  usecase "QA Thread Management"
 
   note top of (Settings)
     The app includes embedded default
@@ -104,24 +105,30 @@ rectangle "iOS App" {
      This allows local inference or
      embedding generation with custom models.
   end note
+
+  note right of (QA Thread Management)
+    QA thread history and management
+    details are implemented in the NoesisNoema app.
+  end note
 }
 
 rectangle "Model Pipeline" {
-  usecase "Preprocess:\n Embedding Generation\n & \nDocument Splitting" as UC2
-  usecase "Export .llmrag File" as UC3
+  usecase "Preprocess:\n Embedding Generation\n & \nDocument Splitting (generates RAGpack .zip)" as UC2
+  usecase "Export RAGpack (.zip)" as UC3
   usecase "LLM Answer"
   usecase "RAG Answer"
 
   note right of UC2
     Preprocessing creates embeddings and
-    splits documents into chunks.
+    splits documents into chunks,
+    generating a RAGpack (.zip) package.
   end note
 
   note right of UC3
     All chunk, embedding, and metadata files
-    are bundled as a single .llmrag package
-    for app import.
-    (.llmrag is generated in Colab or similar
+    are bundled as a single RAGpack (.zip)
+    package for app import.
+    (RAGpack (.zip) is generated in Colab or similar
     tools and imported to iOS for local RAG.)
   end note
 
@@ -133,6 +140,11 @@ rectangle "Model Pipeline" {
   note right of (RAG Answer)
     Retrieval Augmented Generation combines
     retrieval with LLM for better responses.
+  end note
+
+  note right
+    For details on QA history/thread UI,
+    see NoesisNoema app.
   end note
 }
 
@@ -156,6 +168,7 @@ User --> (Ask Question)
 User --> (Model Switch)
 User --> (Settings)
 User --> (Import Model Resource)
+User --> (QA Thread Management)
 
 Admin --> (System Log / Audit)
 
