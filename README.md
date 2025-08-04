@@ -14,10 +14,11 @@ A deep private RAG core for macOS/iOS, inspired by the depths of the ocean.
 - Future plans: web & cloudless multi-user collaboration
 
 ## Quick Start
-1. Download the latest release (see [Releases](https://github.com/raskolnikoff/ragfish/releases))
-2. Launch RAGfish—explore sample documents out of the box
-3. (Optional) Preprocess your own docs using the [RAGpack Colab Preprocessor Notebook](https://github.com/raskolnikoff/noesisnoema-pipeline/blob/main/notebooks/chunks_and_embeddings_colab.ipynb) from the noesisnoema-pipeline project, download the RAGpack ZIP, and import it in-app
-4. Start asking questions in natural language. Enjoy!
+1. Download and launch [NoesisNoema app](https://github.com/raskolnikoff/NoesisNoema) for macOS
+2. (Optional) Preprocess your own docs using the [RAGpack Colab Preprocessor Notebook](https://github.com/raskolnikoff/noesisnoema-pipeline/blob/main/notebooks/chunks_and_embeddings_colab.ipynb) from the noesisnoema-pipeline project, download the RAGpack ZIP, and import it in-app
+3. Start asking questions in natural language. Enjoy!
+
+*Note: Official release builds are coming soon. For now, use the main branch of NoesisNoema app. See [RAGfish](https://github.com/raskolnikoff/RAGfish) for specs and dev tools.*
 
 ## Ecosystem & Related Projects
 
