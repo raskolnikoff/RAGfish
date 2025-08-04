@@ -50,11 +50,19 @@ It is designed to be used with the following companion projects:
   2. Follow the notebook or CLI steps to generate your own RAGpack from PDF or text
   3. Download and import the RAGpack (.zip) in NoesisNoema or RAGfish
 
-### Architecture Overview
+## Architecture Overview
 
-```
-[Your docs/architect/ARCHITECTURE.md and diagrams describe the RAGfish architecture, RAGpack format, and the flow between pipeline, core, and app.]
-```
+RAGfish consists of three main parts:
+- The pipeline (for preprocessing and generating RAGpacks)
+- The RAGfish core engine (which performs fast local retrieval and QA)
+- User-facing apps (NoesisNoema for macOS/iOS)
+
+All knowledge flows through the RAGpack format for seamless integration and privacy.
+
+See the detailed architecture documentation and diagrams:
+- [Architecture Doc](./docs/architect/ARCHITECTURE.md)
+- [Component Diagram](docs/assets/ComponentDiagram.png)
+- [Class Diagram](docs/assets/ClassDiagram.png)
 
 ## Business Workflow Transformation: As-Is vs. To-Be
 
