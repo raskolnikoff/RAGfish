@@ -56,6 +56,19 @@ It is designed to be used with the following companion projects:
 [Your docs/architect/ARCHITECTURE.md and diagrams describe the RAGfish architecture, RAGpack format, and the flow between pipeline, core, and app.]
 ```
 
+## Business Workflow Transformation: As-Is vs. To-Be
+
+See how RAGfish revolutionizes document Q&A and knowledge workflows compared to conventional approaches:
+
+![Business Workflow: As-Is vs. To-Be](docs/assets/noesisnoema.png)
+
+**Key Benefits:**
+- Unified, instant document Q&A (no more fragmented search)
+- On-device privacy—no cloud, no leaks
+- Fully offline, always available
+- Easy to extend with your own knowledge packs (RAGpacks)
+- Built for business productivity and compliance
+
 ## Project Philosophy
 
 RAGfish is built on the principle that knowledge work should remain private, powerful, and beautiful—like the silent depths of the ocean. We believe LLM-powered RAG should require no server, no login, and no risk. Your documents, your brain—on your device.

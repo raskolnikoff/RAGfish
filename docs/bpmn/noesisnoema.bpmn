@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1ha2zwn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.37.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.7.0">
+  <bpmn:collaboration id="Collaboration_1fmdyzs">
+    <bpmn:participant id="Participant_14fwk3s" processRef="Process_079e46t" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_079e46t" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Employee">
+      <bpmn:outgoing>Flow_0mxdf43</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_0q6la53">
+      <bpmn:incoming>Flow_0mxdf43</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0mxdf43" sourceRef="StartEvent_1" targetRef="Activity_0q6la53" />
+  </bpmn:process>
+  <bpmn:process id="Process_AsIs" name="Conventional Knowledge Search (As-Is Knowledge Search)" isExecutable="true">
+    <bpmn:sequenceFlow id="Flow_AsIs_Question" sourceRef="StartEvent_AsIs_Start" targetRef="Task_AsIs_Question" />
+    <bpmn:sequenceFlow id="Flow_AsIs_CloudSearch" sourceRef="Task_AsIs_Question" targetRef="Task_AsIs_CloudSearch" />
+    <bpmn:sequenceFlow id="Flow_AsIs_DistributedSearch" sourceRef="Task_AsIs_CloudSearch" targetRef="Task_AsIs_DistributedSearch" />
+    <bpmn:sequenceFlow id="Flow_AsIs_GetDocs" sourceRef="Task_AsIs_DistributedSearch" targetRef="Task_AsIs_GetDocs" />
+    <bpmn:sequenceFlow id="Flow_AsIs_EndFlow" sourceRef="Task_AsIs_GetDocs" targetRef="EndEvent_AsIs_End" />
+    <bpmn:startEvent id="StartEvent_AsIs_Start" name="Employee">
+      <bpmn:outgoing>Flow_AsIs_Question</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0fzz6bf</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_AsIs_DistributedSearch" name="Distributed Information Search">
+      <bpmn:incoming>Flow_AsIs_DistributedSearch</bpmn:incoming>
+      <bpmn:incoming>Flow_1mto0qq</bpmn:incoming>
+      <bpmn:outgoing>Flow_AsIs_GetDocs</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0zkkq7n</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_AsIs_CloudSearch" name="Cloud Search">
+      <bpmn:incoming>Flow_AsIs_CloudSearch</bpmn:incoming>
+      <bpmn:incoming>Flow_0h2fxfs</bpmn:incoming>
+      <bpmn:outgoing>Flow_AsIs_DistributedSearch</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1mto0qq</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_AsIs_GetDocs" name="Ad-hoc Document Acquisition">
+      <bpmn:incoming>Flow_AsIs_GetDocs</bpmn:incoming>
+      <bpmn:incoming>Flow_0zkkq7n</bpmn:incoming>
+      <bpmn:outgoing>Flow_AsIs_EndFlow</bpmn:outgoing>
+      <bpmn:outgoing>Flow_09sv2mf</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_AsIs_Question" name="Question Occurs">
+      <bpmn:incoming>Flow_AsIs_Question</bpmn:incoming>
+      <bpmn:incoming>Flow_0fzz6bf</bpmn:incoming>
+      <bpmn:outgoing>Flow_AsIs_CloudSearch</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0h2fxfs</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_AsIs_End" name="End">
+      <bpmn:incoming>Flow_AsIs_EndFlow</bpmn:incoming>
+      <bpmn:incoming>Flow_09sv2mf</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0fzz6bf" sourceRef="StartEvent_AsIs_Start" targetRef="Task_AsIs_Question" />
+    <bpmn:sequenceFlow id="Flow_1mto0qq" sourceRef="Task_AsIs_CloudSearch" targetRef="Task_AsIs_DistributedSearch" />
+    <bpmn:sequenceFlow id="Flow_0zkkq7n" sourceRef="Task_AsIs_DistributedSearch" targetRef="Task_AsIs_GetDocs" />
+    <bpmn:sequenceFlow id="Flow_0h2fxfs" sourceRef="Task_AsIs_Question" targetRef="Task_AsIs_CloudSearch" />
+    <bpmn:sequenceFlow id="Flow_09sv2mf" sourceRef="Task_AsIs_GetDocs" targetRef="EndEvent_AsIs_End" />
+  </bpmn:process>
+  <bpmn:process id="Process_ToBe" name="After RAGfish Introduction (To-Be Knowledge Search)" isExecutable="true">
+    <bpmn:sequenceFlow id="Flow_ToBe_Question" sourceRef="StartEvent_ToBe_Start" targetRef="Task_ToBe_Question" />
+    <bpmn:sequenceFlow id="Flow_ToBe_RAGfishNoesisNoema" sourceRef="Task_ToBe_Question" targetRef="Task_ToBe_RAGfishNoesisNoema" />
+    <bpmn:sequenceFlow id="Flow_ToBe_RAGpackSearch" sourceRef="Task_ToBe_RAGfishNoesisNoema" targetRef="Task_ToBe_RAGpackSearch" />
+    <bpmn:sequenceFlow id="Flow_ToBe_InstantQA" sourceRef="Task_ToBe_RAGpackSearch" targetRef="Task_ToBe_InstantQA" />
+    <bpmn:sequenceFlow id="Flow_ToBe_EndFlow" sourceRef="Task_ToBe_InstantQA" targetRef="EndEvent_ToBe_End" />
+    <bpmn:startEvent id="StartEvent_ToBe_Start" name="Employee">
+      <bpmn:outgoing>Flow_ToBe_Question</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0bxcjx5</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_ToBe_End" name="End">
+      <bpmn:incoming>Flow_ToBe_EndFlow</bpmn:incoming>
+      <bpmn:incoming>Flow_0jvxhy4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Task_ToBe_Question" name="Question Occurs">
+      <bpmn:incoming>Flow_ToBe_Question</bpmn:incoming>
+      <bpmn:incoming>Flow_0bxcjx5</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToBe_RAGfishNoesisNoema</bpmn:outgoing>
+      <bpmn:outgoing>Flow_14lmlmb</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ToBe_RAGfishNoesisNoema" name="RAGfish/NoesisNoema App">
+      <bpmn:incoming>Flow_ToBe_RAGfishNoesisNoema</bpmn:incoming>
+      <bpmn:incoming>Flow_14lmlmb</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToBe_RAGpackSearch</bpmn:outgoing>
+      <bpmn:outgoing>Flow_04p3waz</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ToBe_RAGpackSearch" name="Integrated RAGpack Search">
+      <bpmn:incoming>Flow_ToBe_RAGpackSearch</bpmn:incoming>
+      <bpmn:incoming>Flow_04p3waz</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToBe_InstantQA</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1q015e0</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ToBe_InstantQA" name="Instant QA with Source Citation">
+      <bpmn:incoming>Flow_ToBe_InstantQA</bpmn:incoming>
+      <bpmn:incoming>Flow_1q015e0</bpmn:incoming>
+      <bpmn:outgoing>Flow_ToBe_EndFlow</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0jvxhy4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0bxcjx5" sourceRef="StartEvent_ToBe_Start" targetRef="Task_ToBe_Question" />
+    <bpmn:sequenceFlow id="Flow_0jvxhy4" sourceRef="Task_ToBe_InstantQA" targetRef="EndEvent_ToBe_End" />
+    <bpmn:sequenceFlow id="Flow_14lmlmb" sourceRef="Task_ToBe_Question" targetRef="Task_ToBe_RAGfishNoesisNoema" />
+    <bpmn:sequenceFlow id="Flow_04p3waz" sourceRef="Task_ToBe_RAGfishNoesisNoema" targetRef="Task_ToBe_RAGpackSearch" />
+    <bpmn:sequenceFlow id="Flow_1q015e0" sourceRef="Task_ToBe_RAGpackSearch" targetRef="Task_ToBe_InstantQA" />
+  </bpmn:process>
+  <bpmn:collaboration id="Collaboration_AsIs_ToBe">
+    <bpmn:participant id="Participant_AsIs" name="Conventional Knowledge Search (As-Is)" processRef="Process_AsIs" />
+    <bpmn:participant id="Participant_ToBe" name="After RAGfish Introduction (To-Be)" processRef="Process_ToBe" />
+    <bpmn:textAnnotation id="TextAnnotation_AsIs_Problem">
+      <bpmn:text>Problem: Distributed information search is time-consuming, and ad-hoc document acquisition is low in accuracy.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_ToBe_Improvement">
+      <bpmn:text>Improvement: Integrated search enables instant answers and source citation.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_AsIs_Problem" sourceRef="Task_AsIs_DistributedSearch" targetRef="TextAnnotation_AsIs_Problem" />
+    <bpmn:association id="Association_ToBe_Improvement" sourceRef="Task_ToBe_InstantQA" targetRef="TextAnnotation_ToBe_Improvement" />
+  </bpmn:collaboration>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_AsIs_ToBe" bpmnElement="Collaboration_AsIs_ToBe">
+      <bpmndi:BPMNShape id="Participant_AsIs_di" bpmnElement="Participant_AsIs" isHorizontal="true">
+        <dc:Bounds x="160" y="100" width="870" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_AsIs_Start_di" bpmnElement="StartEvent_AsIs_Start">
+        <dc:Bounds x="240" y="158" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="234" y="194" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AsIs_DistributedSearch_di" bpmnElement="Task_AsIs_DistributedSearch">
+        <dc:Bounds x="595" y="151" width="120" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AsIs_CloudSearch_di" bpmnElement="Task_AsIs_CloudSearch">
+        <dc:Bounds x="443" y="151" width="100" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AsIs_GetDocs_di" bpmnElement="Task_AsIs_GetDocs">
+        <dc:Bounds x="767" y="151" width="120" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_AsIs_Question_di" bpmnElement="Task_AsIs_Question">
+        <dc:Bounds x="296" y="151" width="100" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_AsIs_End_di" bpmnElement="EndEvent_AsIs_End">
+        <dc:Bounds x="932" y="158" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="940" y="194" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_AsIs_Problem_di" bpmnElement="Association_AsIs_Problem">
+        <di:waypoint x="638" y="201" />
+        <di:waypoint x="594" y="215" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fzz6bf_di" bpmnElement="Flow_0fzz6bf">
+        <di:waypoint x="276" y="176" />
+        <di:waypoint x="296" y="176" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0h2fxfs_di" bpmnElement="Flow_0h2fxfs">
+        <di:waypoint x="396" y="176" />
+        <di:waypoint x="443" y="176" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mto0qq_di" bpmnElement="Flow_1mto0qq">
+        <di:waypoint x="543" y="176" />
+        <di:waypoint x="595" y="176" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zkkq7n_di" bpmnElement="Flow_0zkkq7n">
+        <di:waypoint x="715" y="176" />
+        <di:waypoint x="767" y="176" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09sv2mf_di" bpmnElement="Flow_09sv2mf">
+        <di:waypoint x="887" y="176" />
+        <di:waypoint x="932" y="176" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_ToBe_di" bpmnElement="Participant_ToBe" isHorizontal="true">
+        <dc:Bounds x="160" y="300" width="870" height="190" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_ToBe_Start_di" bpmnElement="StartEvent_ToBe_Start">
+        <dc:Bounds x="240" y="358" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="234" y="394" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_ToBe_End_di" bpmnElement="EndEvent_ToBe_End">
+        <dc:Bounds x="932" y="358" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="940" y="394" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ToBe_Question_di" bpmnElement="Task_ToBe_Question">
+        <dc:Bounds x="312" y="351" width="100" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ToBe_RAGfishNoesisNoema_di" bpmnElement="Task_ToBe_RAGfishNoesisNoema">
+        <dc:Bounds x="453" y="351" width="120" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ToBe_RAGpackSearch_di" bpmnElement="Task_ToBe_RAGpackSearch">
+        <dc:Bounds x="614" y="351" width="120" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_ToBe_InstantQA_di" bpmnElement="Task_ToBe_InstantQA">
+        <dc:Bounds x="775" y="351" width="120" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0bxcjx5_di" bpmnElement="Flow_0bxcjx5">
+        <di:waypoint x="276" y="376" />
+        <di:waypoint x="312" y="376" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14lmlmb_di" bpmnElement="Flow_14lmlmb">
+        <di:waypoint x="412" y="376" />
+        <di:waypoint x="453" y="376" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04p3waz_di" bpmnElement="Flow_04p3waz">
+        <di:waypoint x="573" y="376" />
+        <di:waypoint x="614" y="376" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q015e0_di" bpmnElement="Flow_1q015e0">
+        <di:waypoint x="734" y="376" />
+        <di:waypoint x="775" y="376" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jvxhy4_di" bpmnElement="Flow_0jvxhy4">
+        <di:waypoint x="895" y="376" />
+        <di:waypoint x="932" y="376" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_ToBe_Improvement_di" bpmnElement="Association_ToBe_Improvement">
+        <di:waypoint x="843" y="401" />
+        <di:waypoint x="814" y="415" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_AsIs_Problem_di" bpmnElement="TextAnnotation_AsIs_Problem">
+        <dc:Bounds x="510" y="215" width="240" height="65" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_ToBe_Improvement_di" bpmnElement="TextAnnotation_ToBe_Improvement">
+        <dc:Bounds x="740" y="415" width="225" height="50" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
