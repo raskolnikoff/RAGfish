@@ -19,7 +19,7 @@ A deep private RAG core for macOS/iOS, inspired by the depths of the ocean and n
 
 ## Quick Start
 1. Download and launch [NoesisNoema app](https://github.com/raskolnikoff/NoesisNoema) for macOS/iOS
-2. (Optional) Preprocess your own docs and images using the [RAGpack Colab Preprocessor Notebook](https://github.com/raskolnikoff/noesisnoema-pipeline/blob/main/notebooks/chunks_and_embeddings_colab.ipynb) from the noesisnoema-pipeline project, download the RAGpack ZIP, and import it in-app
+2. (Optional) Preprocess your own docs and images using the [RAGpack Colab Preprocessor Notebook](https://github.com/raskolnikoff/noesisnoema-pipeline/blob/main/notebooks/chunk_embed_generator.ipynb) from the noesisnoema-pipeline project, download the RAGpack ZIP, and import it in-app
 3. Start asking multi-modal questions in natural language or with images. Enjoy!
 
 *Note: Official release builds are coming soon. For now, use the main branch of NoesisNoema app. See [RAGfish](https://github.com/raskolnikoff/RAGfish) for specs and dev tools.*
@@ -101,8 +101,8 @@ RAGfish is built on the principle that knowledge work should remain private, pow
 
 ## Documentation
 - [Architecture](./docs/architect/ARCHITECTURE.md)
-- [Design Docs (WIP)](./docs/designs/)
-- [ADRs (WIP)](./docs/adr/)
+- [Design Docs](./docs/designs/DesignDoc.md)
+- [ADRs](./docs/adr/)
 
 ## Roadmap / Future Plans
 
