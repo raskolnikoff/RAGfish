@@ -2,6 +2,25 @@
 !theme amiga
 left to right direction
 
+'=== Shared types / enums ===
+enum Modality {
+    text
+    vision
+}
+enum ModelFormat {
+    gguf
+    transformers
+    coreml
+}
+class PromptTemplate {
+    +style: String
+    +system_prefix: String
+    +user_prefix: String
+    +assistant_prefix: String
+    +suffix: String
+    +stop: String[*]
+}
+
 '=== iOS App Layer ===
 class RAGApp {
     +DocumentManager documentManager
@@ -21,8 +40,10 @@ class RAGpack {
     +filename: String
     +metadata: Map
     +chunks: Chunk[*]
+    +imageChunks: ImageChunk[*]  ' optional (vision)
     +isEmbedded: Bool
-    +Note: Always imported/exported as .zip archive, not individual files
+    +Note: Always imported/exported as .zip archive, not individual files.
+    +Note: May include image embeddings when vision workflows are enabled.
 }
 
 class Chunk {
@@ -30,9 +51,19 @@ class Chunk {
     +embedding: float[]
 }
 
+class ImageChunk {
+    +imageId: String
+    +embedding: float[]
+    +meta: Map
+}
+note right of ImageChunk
+Experimental for jan‑v1‑4v (vision). Only present when vision is enabled.
+end note
+
 class VectorStore {
-    +chunks: Chunk[*]
-    +findRelevant(queryEmbedding): Chunk[*]
+    +textChunks: Chunk[*]
+    +imageChunks: ImageChunk[*]
+    +findRelevant(queryEmbedding, modality: Modality = text): (Chunk[*] | ImageChunk[*])
 }
 
 class UserQuery {
@@ -49,6 +80,7 @@ class ModelManager {
     +currentLLMModel: LLMModel
     +switchEmbeddingModel(name)
     +switchLLMModel(name)
+    +supportsVision(): Bool
 }
 
 class QAPair {
@@ -73,6 +105,8 @@ class Settings {
 }
 note right of Settings
 App includes embedded default resources (LLMModel, RAGpack) for out-of-the-box usage.
+Default on-device text model may be Jan‑v1‑4B (GGUF). Vision (jan‑v1‑4v) is optional.
+Prompt formatting is metadata-driven (per model family / template).
 Users may optionally import custom resources if needed.
 end note
 
@@ -83,6 +117,7 @@ end note
 '=== Model Pipeline Layer ===
 class Preprocessor {
     +preprocess(document): Chunk[*]
+    +preprocessImages(document): ImageChunk[*]   ' optional (vision)
 }
 
 class EmbeddingModel {
@@ -94,9 +129,18 @@ class LLMModel {
     +name: String
     +modelFile: String
     +version: String
+    +format: ModelFormat
+    +modalities: Modality[*]
+    +contextWindow: Int
+    +promptTemplate: PromptTemplate
     +generate(prompt: String): String
+    +supportsVision(): Bool
     +loadModel(file)
 }
+note right of LLMModel
+Jan family (e.g., Jan‑v1‑4B/4v) uses Qwen‑style chat templates.
+Vision (4v) is optional and enabled when model advertises modality = vision.
+end note
 
 class ChunkExporter {
     +export(chunks: Chunk[*]): RAGpack
@@ -122,6 +166,7 @@ class SystemLog {
 '=== Relations with multiplicity ===
 DocumentManager "1" -- "0..*" RAGpack
 RAGpack "1" -- "0..*" Chunk
+RAGpack "1" -- "0..*" ImageChunk
 RAGApp "1" -- "0..*" QAPair
 
 '=== Relations ===
@@ -132,11 +177,12 @@ RAGApp --> UserQuery
 DocumentManager --> RAGpack
 RAGpack --> Chunk
 DocumentManager --> GoogleDriveService
-'Import/download only; export/upload not included unless extended later
+' Google Drive import is optional; local/CLI first
 DocumentManager --> FileResource
 DocumentManager --> LLMModel
 UserQuery --> VectorStore
 VectorStore --> Chunk
+VectorStore --> ImageChunk
 UserQuery --> AnswerGenerator
 AnswerGenerator --> Chunk
 ModelManager --> EmbeddingModel

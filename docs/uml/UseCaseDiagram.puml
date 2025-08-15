@@ -49,13 +49,16 @@ scale 1
 
 rectangle "iOS App" {
   actor User
-  usecase "Upload Documents / \nImport and Save to Google Drive" as UC1
+  usecase "Import RAGpack (.zip) / Manage Library" as UC1
   usecase "Ask Question"
   usecase "Model Switch"
   usecase "Settings"
   usecase "Retrieve Chunks"
   usecase "Import Model Resource"
   usecase "QA Thread Management"
+
+  usecase "Ask with Image (optional)" as UC_IMG
+  usecase "Capture/Select Image (optional)" as UC_IMG_SRC
 
   note top of (Settings)
     The app includes embedded default
@@ -67,9 +70,9 @@ rectangle "iOS App" {
   end note
 
   note right of UC1
-    Users upload documents directly,
-    import from Google Drive, or save
-    processed data to Google Drive.
+    Users import RAGpack (.zip) files that contain chunks, embeddings, and metadata.
+    RAGpacks can be created via Colab (optional) or local/CLI tools and then added
+    to the on-device library. Cloud import remains optional.
   end note
 
   note right of (Ask Question)
@@ -83,27 +86,20 @@ rectangle "iOS App" {
   end note
 
   note right of (Settings)
-    Users manage system configuration
-    and preferences. On first launch,
-    the app uses embedded default model
-    and default RAG
-    chunks & embeddings. Includes
-    selection of current model
-    and management of paths
-     to imported resources.
+    Users manage configuration and defaults. On first launch, the app uses an
+    embedded lightweight text model (e.g., Jan‑v1‑4B, GGUF) and default RAGpack.
+    Vision model (jan‑v1‑4v) is optional and can be enabled when available.
+    Prompt formatting follows metadata-driven templates (model family aware).
   end note
 
   note right of (Retrieve Chunks)
-    Relevant document chunks are fetched
-    from the vector store.
+    Relevant chunks are fetched from the vector store using text and, when enabled,
+    image embeddings. Retrieval supports multi‑RAGpack libraries.
   end note
 
   note right of (Import Model Resource)
-    Users may optionally import external
-     model resources (weights, configs,
-     etc.) packaged for use by the app.
-     This allows local inference or
-     embedding generation with custom models.
+    Users can import external model resources (GGUF weights, configs, optional mmproj)
+    prepared via CLI tools. This enables local inference with text or vision models.
   end note
 
   note right of (QA Thread Management)
@@ -113,28 +109,32 @@ rectangle "iOS App" {
 }
 
 rectangle "Model Pipeline" {
-  usecase "Preprocess:\n Embedding Generation\n & \nDocument Splitting (generates RAGpack .zip)" as UC2
+  usecase "Preprocess: Document Splitting & Embedding Generation\n→ RAGpack (.zip)" as UC2
   usecase "Export RAGpack (.zip)" as UC3
+  usecase "Download GGUF Models (HF CLI)" as UC4
   usecase "LLM Answer"
   usecase "RAG Answer"
 
   note right of UC2
-    Preprocessing creates embeddings and
-    splits documents into chunks,
-    generating a RAGpack (.zip) package.
+    Preprocessing splits documents and creates embeddings, generating a RAGpack (.zip).
+    Text embeddings are required; image embeddings are optional when enabling vision
+    workflows.
   end note
 
   note right of UC3
-    All chunk, embedding, and metadata files
-    are bundled as a single RAGpack (.zip)
-    package for app import.
-    (RAGpack (.zip) is generated in Colab or similar
-    tools and imported to iOS for local RAG.)
+    All chunks, embeddings, and metadata are bundled as a single RAGpack (.zip)
+    for app import. Colab is supported as an optional workflow; local/CLI is recommended
+    for reproducibility.
+  end note
+
+  note right of UC4
+    Primary method to fetch model artifacts reproducibly (e.g., jan‑v1‑4B/4v GGUF).
+    Supports authentication, redirects, and large file handling better than raw wget.
   end note
 
   note right of (LLM Answer)
-    LLM generates answers based
-    on retrieved chunks.
+    LLM generates answers using metadata‑driven prompt templates (e.g., Qwen‑style for
+    Jan models), based on retrieved context.
   end note
 
   note right of (RAG Answer)
@@ -161,6 +161,7 @@ rectangle "System (Admin)" {
 User --> UC1
 User --> UC2
 UC2 --> UC3
+User --> UC4
 User --> (Ask Question)
 (Ask Question) --> (Retrieve Chunks)
 (Retrieve Chunks) --> (LLM Answer)
@@ -169,6 +170,9 @@ User --> (Model Switch)
 User --> (Settings)
 User --> (Import Model Resource)
 User --> (QA Thread Management)
+User --> UC_IMG_SRC
+UC_IMG_SRC --> UC_IMG
+UC_IMG --> (Retrieve Chunks)
 
 Admin --> (System Log / Audit)
 
