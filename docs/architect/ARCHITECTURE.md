@@ -14,6 +14,9 @@ Visual architecture diagrams are available below and in `assets/`.
 - **Core Engine**
   - Handles all LLM model inference, embedding, and retrieval logic.
   - Written for Apple Silicon (Metal/CoreML or native C/C++ backends).
+  - Now supports the `jan-v1-4v` model with multi-modal (vision-text) capabilities, in addition to previous models.
+  - The vision capability allows interpretation of images, illustrations, and data charts as part of the input.
+  - GGUF-based inference is available as an option.
   - Example: Efficient vector search and prompt construction modules.
 - **Document Manager**
   - Manages all user documents and RAGpacks; embeddings and chunks are now internal to the RAGpack ZIP, with explicit per-file management deprecated.
@@ -30,11 +33,12 @@ Visual architecture diagrams are available below and in `assets/`.
   - Local file system and Google Drive integration.
   - Handles user data and model/resource import.
   - Only RAGpack ZIP (not loose embeddings/chunks) is now the supported format.
+  - RAGpack creation can now be done via multiple pipelines, including updated Colab workflows and optional CLI-based GGUF preparation.
   - Example: ZIP unpacking, file format validation, and cloud sync hooks.
 
 ## Data Flow
 
-- User launches RAGfish, which loads default embedded model and sample RAG DB.
+- User launches RAGfish, which loads the `jan-v1-4v` model or other compatible GGUF/CoreML models; multi-modal queries are supported when using `jan-v1-4v`.
 - User can import additional RAGpacks (preprocessed ZIPs from Colab or CLI); only RAGpack ZIP is supported, not per-file chunks or embeddings.
 - User queries via chat; query is embedded and searched in the local vector store.
 - Relevant chunks are retrieved; RAG pipeline combines prompt + context, sends to LLM for answer.
@@ -49,6 +53,8 @@ Visual architecture diagrams are available below and in `assets/`.
 - C/C++/Metal/CoreML (backend performance)
 - PlantUML or Mermaid (for architecture diagrams)
 - Optional: Google Drive API (for import/export)
+- Optional: `jan-v1-4v` model and GGUF runtime
+- Optional: Hugging Face model download integration
 - Example: CoreML for model acceleration, Swift concurrency for UI responsiveness.
 
 ## Extensibility
@@ -60,4 +66,5 @@ Visual architecture diagrams are available below and in `assets/`.
 - Plugin system for 3rd-party data connectors (TBD)
 - Advanced UI for QA thread management, right-pane knowledge/trace preview (in NoesisNoema and future apps)
 - Support for pluggable RAGpack sources and multi-format ingestion
+- Support for future Jan family model updates and expanded multi-modal RAG workflows
 - Example: Modular backend interfaces, pluggable import/export adapters, secure data layers.

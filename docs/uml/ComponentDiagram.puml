@@ -2,6 +2,15 @@
 !theme plain
 !theme amiga
 
+note as N_LEGEND
+  New/updated components:
+  - Preprocessor (Colab/CLI): generates RAGpack (.zip)
+  - HF CLI Downloader: reproducible model fetch (GGUF)
+  - Model Runtime (GGUF/CoreML): on-device LLM inference
+  - Vision Encoder (optional): image embeddings for future vision workflows
+end note
+N_LEGEND -[hidden]- [UI (Noesis)]
+
 [User] --> [UI (Noesis)]
 [UI (Noesis)] --> [Core Engine]
 [UI (Noesis)] --> [DocumentManager]
@@ -13,8 +22,8 @@ note right of [UI (Noesis)]
 end note
 
 note right of [DocumentManager]
-  QA thread/history managed in-app
-  (see NoesisNoema)
+  Manages RAGpack import and on-device library. Cloud import is optional.
+  RAGpack = {chunks.json, embeddings.csv, metadata.json, (optional) image_embeddings.csv}
 end note
 
 [Core Engine] --> [Vector Store]
@@ -24,6 +33,15 @@ end note
 [File Import/Export] ..> [Google Drive] : sync/import RAGpack (.zip)
 [File Import/Export] ..> [Local File System] : handles RAGpack (.zip)
 
-[Google Colab Preprocessor] ..> [DocumentManager] : outputs RAGpack ZIP
+note right of [File Import/Export]
+  Preferred: local import via CLI-prepared RAGpacks; Colab flow remains optional.
+end note
+
+[Preprocessor (Colab/CLI)] ..> [DocumentManager] : outputs RAGpack (.zip)
+[Preprocessor (Colab/CLI)] ..> [Vision Encoder (optional)] : image embeddings (optional)
+[Vision Encoder (optional)] ..> [Vector Store] : store image embeddings (optional)
+
+[HF CLI Downloader] ..> [Model Runtime (GGUF/CoreML)] : fetch GGUF weights/config
+[Core Engine] --> [Model Runtime (GGUF/CoreML)] : on-device inference
 
 @enduml

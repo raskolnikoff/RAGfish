@@ -6,31 +6,64 @@ User -> Settings : load()
 alt Embedded resources available
     Settings --> DocumentManager : provide embedded RAGpack (.zip), LLMModel
 else Embedded resources NOT available
-    User -> DocumentManager : selectImportFromDrive()
+    User -> DocumentManager : selectImportRAGpack()
 
     alt RAGpack (.zip) available
-        DocumentManager -> GoogleDriveService : download("file.zip")
-        GoogleDriveService --> DocumentManager : RAGpack (.zip)
-        DocumentManager -> RAGpack : extractAndParse(RAGpack.zip)
-        DocumentManager --> User : importComplete()
+        alt Source: Local File
+            DocumentManager -> RAGpack : extractAndParse(RAGpack.zip)
+            DocumentManager --> User : importComplete()
+        else Source: Cloud (optional)
+            DocumentManager -> GoogleDriveService : download("file.zip")
+            GoogleDriveService --> DocumentManager : RAGpack (.zip)
+            DocumentManager -> RAGpack : extractAndParse(RAGpack.zip)
+            DocumentManager --> User : importComplete()
+        end
     else RAGpack (.zip) NOT found
         DocumentManager --> User : error("RAGpack (.zip) not found")
         note right: Fallback to embedded resources if available; otherwise, user must import manually
     end
 end
 
-User -> UserQuery : ask(question)
-UserQuery -> Settings : getDefaultModel()
-note right: Get the default model name from Settings
-UserQuery -> LLMModel : embed(question)
-LLMModel --> UserQuery : queryEmbedding
+' Ensure LLM model is ready (default text model, optional vision model)
+User -> Settings : getDefaultModel()
+Settings --> User : defaultLLM
+User -> LLMModel : ensureLoaded(defaultLLM)
+alt Model not loaded
+    User -> LLMModel : loadModel(file)
+    LLMModel --> User : modelReady
+else Model already loaded
+    LLMModel --> User : modelReady
+end
+note right of LLMModel
+  Default on-device text model may be Jan‑v1‑4B (GGUF).
+  Vision model (jan‑v1‑4v) is optional and only used when enabled.
+end note
 
-UserQuery -> VectorStore : findRelevant(queryEmbedding)
-VectorStore --> UserQuery : relevantChunks
+User -> UserQuery : ask(question[, image])
+UserQuery -> Settings : getPromptTemplate()
+Settings --> UserQuery : promptTemplate
+alt Question includes image
+    UserQuery -> LLMModel : embedImage(image)
+    LLMModel --> UserQuery : imageQueryEmbedding
+    UserQuery -> VectorStore : findRelevant(imageQueryEmbedding, modality=vision)
+    VectorStore --> UserQuery : relevantImageChunks
+    UserQuery -> LLMModel : embed(question)
+    LLMModel --> UserQuery : queryEmbedding
+    UserQuery -> VectorStore : findRelevant(queryEmbedding, modality=text)
+    VectorStore --> UserQuery : relevantTextChunks
+else Text-only question
+    UserQuery -> LLMModel : embed(question)
+    LLMModel --> UserQuery : queryEmbedding
+    UserQuery -> VectorStore : findRelevant(queryEmbedding, modality=text)
+    VectorStore --> UserQuery : relevantChunks
+end
 
-UserQuery -> AnswerGenerator : generate(relevantChunks, question)
+UserQuery -> AnswerGenerator : generate(merge(relevantTextChunks, relevantImageChunks), question, promptTemplate)
 AnswerGenerator --> UserQuery : answer
 
 UserQuery --> User : displayAnswer(answer)
-note right: QA thread/history management (multiple question-answer pairs) is implemented in NoesisNoema app. See app source for details.
+note right
+  QA thread/history management (multi question-answer pairs) is implemented in NoesisNoema.
+  Multimodal entries (image + text) are stored alongside text-only entries when vision is enabled.
+end note
 @enduml

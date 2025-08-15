@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_ragfish_hxgai" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.37.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.7.0">
+  <bpmn:process id="Process_HxGAI" name="Human × Generative AI Workflow" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_Human" name="Human">
+        <bpmn:flowNodeRef>StartEvent_HxGAI</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_Ideate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_Critique</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_GenAI" name="Generative AI">
+        <bpmn:flowNodeRef>ServiceTask_Regenerate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ServiceTask_Generate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>UserTask_Integrate</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_HxGAI</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_QualityOK</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_HxGAI" name="Start" />
+    <bpmn:userTask id="UserTask_Ideate" name="Ideate &#38; Brief">
+      <bpmn:documentation>Define intent, constraints, and acceptance criteria.</bpmn:documentation>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ServiceTask_Generate" name="Generate Draft">
+      <bpmn:documentation>Use LLM to draft content/code based on brief.</bpmn:documentation>
+      <bpmn:outgoing>Flow_Generate_Gateway</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_QualityOK" name="Quality OK?" gatewayDirection="Diverging" default="Flow_Gateway_No_Critique">
+      <bpmn:incoming>Flow_Generate_Gateway</bpmn:incoming>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="UserTask_Critique" name="Critique &#38; Edit">
+      <bpmn:documentation>Human review, annotate issues, add guidance.</bpmn:documentation>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="ServiceTask_Regenerate" name="Regenerate w/ Guidance">
+      <bpmn:documentation>Regenerate using structured critique &amp; constraints.</bpmn:documentation>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="UserTask_Integrate" name="Integrate &#38; Publish">
+      <bpmn:documentation>Integrate the accepted draft into codebase/site and publish.</bpmn:documentation>
+      <bpmn:incoming>Flow_Regenerate_Gateway</bpmn:incoming>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_HxGAI" name="Done" />
+    <bpmn:sequenceFlow id="Flow_Start_Ideate" sourceRef="StartEvent_HxGAI" targetRef="UserTask_Ideate" />
+    <bpmn:sequenceFlow id="Flow_Ideate_Generate" sourceRef="UserTask_Ideate" targetRef="ServiceTask_Generate" />
+    <bpmn:sequenceFlow id="Flow_Gateway_No_Critique" name="No" sourceRef="Gateway_QualityOK" targetRef="UserTask_Critique">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!quality_ok}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Critique_Regenerate" sourceRef="UserTask_Critique" targetRef="ServiceTask_Regenerate" />
+    <bpmn:sequenceFlow id="Flow_Regenerate_Gateway" sourceRef="ServiceTask_Regenerate" targetRef="UserTask_Integrate" />
+    <bpmn:sequenceFlow id="Flow_Gateway_Yes_Integrate" name="Yes" sourceRef="Gateway_QualityOK" targetRef="UserTask_Integrate">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${quality_ok}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Integrate_End" sourceRef="UserTask_Integrate" targetRef="EndEvent_HxGAI" />
+    <bpmn:sequenceFlow id="Flow_Generate_Gateway" sourceRef="ServiceTask_Generate" targetRef="Gateway_QualityOK" />
+    <bpmn:textAnnotation id="Note_SingleHuman">
+      <bpmn:text>Single human editor remains decisive (taste, constraints, integration).</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Assoc_Note_SingleHuman_Ideate" sourceRef="Note_SingleHuman" targetRef="UserTask_Ideate" />
+    <bpmn:textAnnotation id="Note_ShortCycles">
+      <bpmn:text>Short cycles: Ideate → Generate → Critique → Regenerate</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Assoc_Note_ShortCycles_Gateway" sourceRef="Note_ShortCycles" targetRef="Gateway_QualityOK" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_HxGAI">
+    <bpmndi:BPMNPlane id="BPMNPlane_HxGAI" bpmnElement="Process_HxGAI">
+      <bpmndi:BPMNShape id="Lane_GenAI_di" bpmnElement="Lane_GenAI">
+        <dc:Bounds x="150" y="360" width="1200" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Human_di" bpmnElement="Lane_Human">
+        <dc:Bounds x="150" y="100" width="1200" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_HxGAI_di" bpmnElement="StartEvent_HxGAI">
+        <dc:Bounds x="200" y="210" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_Ideate_di" bpmnElement="UserTask_Ideate">
+        <dc:Bounds x="270" y="190" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_Generate_di" bpmnElement="ServiceTask_Generate">
+        <dc:Bounds x="480" y="430" width="180" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_QualityOK_di" bpmnElement="Gateway_QualityOK" isMarkerVisible="true">
+        <dc:Bounds x="731" y="445" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="726" y="505" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_Critique_di" bpmnElement="UserTask_Critique">
+        <dc:Bounds x="860" y="190" width="170" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_Regenerate_di" bpmnElement="ServiceTask_Regenerate">
+        <dc:Bounds x="1060" y="430" width="190" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_Integrate_di" bpmnElement="UserTask_Integrate">
+        <dc:Bounds x="851" y="430" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_HxGAI_di" bpmnElement="EndEvent_HxGAI">
+        <dc:Bounds x="1282" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1287" y="578" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Note_SingleHuman_di" bpmnElement="Note_SingleHuman">
+        <dc:Bounds x="270" y="130" width="260" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Note_ShortCycles_di" bpmnElement="Note_ShortCycles">
+        <dc:Bounds x="653" y="550" width="260" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_Ideate_di" bpmnElement="Flow_Start_Ideate">
+        <di:waypoint x="236" y="228" />
+        <di:waypoint x="270" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Ideate_Generate_di" bpmnElement="Flow_Ideate_Generate">
+        <di:waypoint x="430" y="230" />
+        <di:waypoint x="450" y="230" />
+        <di:waypoint x="450" y="470" />
+        <di:waypoint x="480" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Gateway_No_Critique_di" bpmnElement="Flow_Gateway_No_Critique">
+        <di:waypoint x="756" y="445" />
+        <di:waypoint x="756" y="230" />
+        <di:waypoint x="860" y="230" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="764" y="327" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Critique_Regenerate_di" bpmnElement="Flow_Critique_Regenerate">
+        <di:waypoint x="1030" y="230" />
+        <di:waypoint x="1155" y="230" />
+        <di:waypoint x="1155" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Regenerate_Gateway_di" bpmnElement="Flow_Regenerate_Gateway">
+        <di:waypoint x="1060" y="470" />
+        <di:waypoint x="991" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Gateway_Yes_Integrate_di" bpmnElement="Flow_Gateway_Yes_Integrate">
+        <di:waypoint x="780" y="471" />
+        <di:waypoint x="816" y="471" />
+        <di:waypoint x="816" y="470" />
+        <di:waypoint x="851" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="825" y="448" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Integrate_End_di" bpmnElement="Flow_Integrate_End">
+        <di:waypoint x="991" y="490" />
+        <di:waypoint x="1036" y="490" />
+        <di:waypoint x="1036" y="559" />
+        <di:waypoint x="1282" y="559" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Generate_Gateway_di" bpmnElement="Flow_Generate_Gateway">
+        <di:waypoint x="660" y="470" />
+        <di:waypoint x="731" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Assoc_Note_SingleHuman_Ideate_di" bpmnElement="Assoc_Note_SingleHuman_Ideate">
+        <di:waypoint x="400" y="170" />
+        <di:waypoint x="350" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Assoc_Note_ShortCycles_Gateway_di" bpmnElement="Assoc_Note_ShortCycles_Gateway">
+        <di:waypoint x="722" y="550" />
+        <di:waypoint x="750" y="489" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
