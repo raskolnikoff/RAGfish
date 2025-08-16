@@ -2,6 +2,10 @@
 
 ![RAGfish Logo](docs/assets/og-image.png)
 
+## 🎥 Demo Video
+
+[![Watch the Demo](https://img.youtube.com/vi/VzCrfXZyfss/0.jpg)](https://youtube.com/shorts/VzCrfXZyfss?feature=share)
+
 A deep private RAG core for macOS/iOS, inspired by the depths of the ocean and now empowered with multi-modal intelligence.
 
 ## Features
